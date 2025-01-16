@@ -1,0 +1,60 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: xvpt-mongo
+    ports:
+      - '27017:27017'
+    environment:
+      - 'MONGO_INITDB_DATABASE=xvpt'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+      - 'MONGO_INITDB_ROOT_PASSWORD=password'
+    volumes:
+      - ./docker/mongo:/data/db
+    networks:
+      - xvpt
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: xvpt-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis:/data
+    networks:
+      - xvpt
+    restart: unless-stopped
+  keycloak-mysql:
+    container_name: xvpt-keycloak-mysql
+    image: mysql:latest
+    volumes:
+      - ./docker/mysql_keycloak_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+    networks:
+      - xvpt
+  keycloak:
+    container_name: xvpt-keycloak
+    image: quay.io/keycloak/keycloak:latest
+    command: [ "start-dev", "--import-realm" ]
+    ports:
+      - "9000:8080"
+    environment:
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://xvpt-keycloak-mysql:3306/keycloak?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: root
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - xvpt
+    depends_on:
+      - keycloak-mysql
+    volumes:
+      - ./docker/keycloak/realms/:/opt/keycloak/data/import/
+
+networks:
+  xvpt:
+    driver: bridge

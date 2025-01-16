@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: xvpt
+  data:
+    mongodb:
+      uri: mongodb://root:password@localhost:27017/xvpt?authSource=admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000/realms/xvpt-realm
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
+xvpt:
+  file-store: ./xvpt
