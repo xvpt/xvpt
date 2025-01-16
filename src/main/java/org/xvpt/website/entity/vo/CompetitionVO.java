@@ -14,4 +14,7 @@ public class CompetitionVO {
     private String description;
     private String host;
     private long endDate;
+
+    private int maxUploads;
+    private int enteredPhotos;
 }

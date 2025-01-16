@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class JoinCompetitionDTO {
+public class EnterCompetitionDTO {
     private String competition;
     private String media; // media id
     private String description; // photo description

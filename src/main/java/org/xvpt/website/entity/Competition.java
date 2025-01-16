@@ -23,8 +23,9 @@ public class Competition extends TrackingEntity {
     private Media thumbnail;
 
     private LocalDateTime endDate;
+    private int maxUploads;
 
     public boolean isOver() {
-        return endDate.isAfter(LocalDateTime.now());
+        return endDate.isBefore(LocalDateTime.now());
     }
 }

@@ -53,6 +53,7 @@ public class CompetitionServiceImpl implements CompetitionService {
         competition.setName(dto.getName());
         competition.setDescription(dto.getDescription());
         competition.setHost(user);
+        competition.setMaxUploads(dto.getMaxUploads());
         competition.setEndDate(LocalDateTime.now().plusDays(dto.getDuration()));
         log.info("Host competition: {}", competition.getName());
         return competitionMapper.toCompetitionVO(competitionRepository.save(competition));
@@ -76,6 +77,10 @@ public class CompetitionServiceImpl implements CompetitionService {
                 .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
         competition.setName(dto.getName());
         competition.setDescription(dto.getDescription());
+        if (competition.getMaxUploads() > dto.getMaxUploads()) {
+            throw new IllegalArgumentException("You cannot lower the upload limit");
+        }
+        competition.setMaxUploads(dto.getMaxUploads());
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(dto.getEndDate()), ZoneOffset.UTC);
         if (endDate.isBefore(now)) {
@@ -111,5 +116,11 @@ public class CompetitionServiceImpl implements CompetitionService {
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
         return mediaService.getFile(competition.getThumbnail().getId());
+    }
+
+    @Override
+    public CompetitionVO getCompetition(String id) {
+        return competitionMapper.toCompetitionVO(competitionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Competition not found")));
     }
 }

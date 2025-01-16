@@ -27,4 +27,6 @@ public interface CompetitionService {
     CompetitionVO uploadThumbnail(String competitionId , MultipartFile file, Authentication authentication) throws IOException;
 
     InputStream getThumbnail(String competitionId) throws IOException;
+
+    CompetitionVO getCompetition(String id);
 }

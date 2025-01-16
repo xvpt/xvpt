@@ -10,6 +10,7 @@ public class ModifyCompetitionDTO {
 
     private String name;
     private String description;
+    private int maxUploads;
 
     private long endDate;
 }

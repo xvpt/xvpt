@@ -11,7 +11,7 @@ spring:
           issuer-uri: http://localhost:9000/realms/xvpt-realm
   servlet:
     multipart:
-      max-file-size: 50MB
+      max-file-size: 10MB
 
 xvpt:
   file-store: ./xvpt

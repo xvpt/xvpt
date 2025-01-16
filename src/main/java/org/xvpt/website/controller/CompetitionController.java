@@ -27,10 +27,14 @@ public class CompetitionController {
 
     @GetMapping
     public ResponseEntity<RestBean<Page<CompetitionVO>>> list(
-            @RequestParam int page,
-            @RequestParam int size
+            @RequestParam int page
     ) {
-        return ResponseEntity.ok(RestBean.success(competitionService.list(PageRequest.of(page, size))));
+        return ResponseEntity.ok(RestBean.success(competitionService.list(PageRequest.of(page, 50))));
+    }
+
+    @GetMapping("info")
+    public ResponseEntity<RestBean<CompetitionVO>> info(@RequestParam String id) {
+        return ResponseEntity.ok(RestBean.success(competitionService.getCompetition(id)));
     }
 
     @GetMapping("thumbnail")
