@@ -9,7 +9,7 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=root'
       - 'MONGO_INITDB_ROOT_PASSWORD=password'
     volumes:
-      - ./docker/mongo:/data/db
+      - mongo:/data/db
     networks:
       - xvpt
     restart: unless-stopped
@@ -19,8 +19,6 @@ services:
     container_name: xvpt-redis
     ports:
       - "6379:6379"
-    volumes:
-      - ./docker/redis:/data
     networks:
       - xvpt
     restart: unless-stopped
@@ -28,7 +26,7 @@ services:
     container_name: xvpt-keycloak-mysql
     image: mysql:latest
     volumes:
-      - ./docker/mysql_keycloak_data:/var/lib/mysql
+      - mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_USERNAME: root
       MYSQL_ROOT_PASSWORD: root
@@ -58,3 +56,9 @@ services:
 networks:
   xvpt:
     driver: bridge
+
+volumes:
+  mysql:
+    driver: local
+  mongo:
+    driver: local
