@@ -39,13 +39,14 @@ public class CompetitionController {
 
     @GetMapping("thumbnail")
     public void thumbnailImage(@RequestParam String id, HttpServletResponse response) throws IOException {
-        InputStream inputStream = null;
+        InputStream inputStream;
         response.setContentType("image/webp");
         try {
             inputStream = competitionService.getThumbnail(id);
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.getWriter().write(RestBean.failure(404, "Competition not found").toJson());
+            return;
         }
         if (inputStream == null) {
             // return the default thumbnail
