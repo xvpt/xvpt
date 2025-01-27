@@ -78,7 +78,7 @@
         "attributes": {}
       },
       {
-        "id": "11880518-31a2-4175-8c7a-decd6fc5f2cd",
+        "id": "c87d52ce-3792-410a-bd40-bc209c485dbd",
         "name": "xvpt_admin",
         "description": "",
         "composite": false,
@@ -845,16 +845,16 @@
       "defaultClientScopes": [
         "web-origins",
         "acr",
-        "profile",
         "roles",
+        "profile",
         "basic",
         "email"
       ],
       "optionalClientScopes": [
         "address",
         "phone",
-        "organization",
         "offline_access",
+        "organization",
         "microprofile-jwt"
       ]
     }
