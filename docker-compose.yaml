@@ -12,7 +12,7 @@ services:
       - mongo:/data/db
     networks:
       - xvpt
-    restart: unless-stopped
+    restart: always
 
   redis:
     image: redis:latest
@@ -21,10 +21,11 @@ services:
       - "6379:6379"
     networks:
       - xvpt
-    restart: unless-stopped
+    restart: always
   keycloak-mysql:
     container_name: xvpt-keycloak-mysql
     image: mysql:latest
+    restart: always
     volumes:
       - mysql:/var/lib/mysql
     environment:
@@ -39,6 +40,7 @@ services:
     command: [ "start-dev", "--import-realm" ]
     ports:
       - "9000:8080"
+    restart: always
     environment:
       KC_DB: mysql
       KC_DB_URL: jdbc:mysql://xvpt-keycloak-mysql:3306/keycloak?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
@@ -52,6 +54,7 @@ services:
       - keycloak-mysql
     volumes:
       - ./docker/keycloak/realms/:/opt/keycloak/data/import/
+      - ./docker/scripts/wait-for-it.sh:/wait-for-it.sh
 
 networks:
   xvpt:
