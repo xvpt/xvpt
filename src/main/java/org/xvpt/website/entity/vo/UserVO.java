@@ -13,8 +13,6 @@ public class UserVO {
     private String id;
     private String nickname;
     private String bio;
-    private String firstName;
-    private String lastName;
     private String avatar;
     private List<String> roles;
 }

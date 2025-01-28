@@ -1,0 +1,614 @@
+openapi: "3.1.0"
+info:
+  title: "xvpt API"
+  description: "所有的操作都需要带token,包括获取图片."
+  version: "1.0.0"
+servers:
+  - url: "http://127.0.0.1:8080"
+  - url: "https://xvpt.lunarclient.top"
+paths:
+  /api/user/login:
+    post:
+      summary: "获取登录凭证"
+      operationId: "login"
+      parameters:
+        - name: "username"
+          description: "用户名"
+          schema:
+            type: "string"
+          in: query
+        - name: "password"
+          description: "密码"
+          schema:
+            type: "string"
+          in: query
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthorizeVO"
+
+  /api/user:
+    post:
+      summary: "修改自己的profile"
+      operationId: "editProfile"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditProfileDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+    get:
+      summary: "获取自己的profile"
+      operationId: "getUser"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+  /api/user/avatar:
+    post:
+      summary: "上传头像"
+      operationId: "uploadAvatar"
+      parameters:
+        - name: "file"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "binary"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+    get:
+      summary: "获取头像"
+      operationId: "getUserAvatar"
+      parameters:
+        - name: "id"
+          in: "query"
+          description: "用户id,不填就是查询自己的"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+  /api/user/register:
+    post:
+      summary: "注册用户"
+      operationId: "register"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+  /api/user/resetPassword:
+    post:
+      summary: "重置自己的密码"
+      operationId: "resetPassword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+  /api/user/info:
+    get:
+      summary: "获取其他用户信息"
+      operationId: "getUserInfo"
+      parameters:
+        - name: "id"
+          in: "query"
+          description: "用户ID"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+  /api/photo/upload:
+    post:
+      summary: "上传照片"
+      operationId: "upload"
+      parameters:
+        - name: "file"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "binary"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MediaVO"
+  /api/photo/enter:
+    post:
+      summary: "加入比赛"
+      operationId: "joinCompetition"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnterCompetitionDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+  /api/photo/vote:
+    post:
+      summary: "给相片投票"
+      operationId: "vote"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VoteDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+    delete:
+      summary: "取消投票"
+      operationId: "cancelVote"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VoteDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+  /api/photo:
+    delete:
+      summary: "删除照片"
+      operationId: "deletePhoto"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeletePhotoDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+    get:
+      summary: "下载照片"
+      operationId: "download"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+          description: "照片ID"
+        - name: "origin"
+          in: "query"
+          required: false
+          description: "是否为原画质(false为压缩)"
+          schema:
+            type: "boolean"
+            default: "false"
+      responses:
+        "200":
+          description: "OK"
+  /api/photo/list:
+    get:
+      summary: "获取照片列表"
+      operationId: "listPhotos"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "页数(总共有多少页在请求之后返回)"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "competition"
+          in: "query"
+          description: "比赛ID"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+  /api/competition:
+    get:
+      summary: "获取当前所有的比赛"
+      operationId: "list"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "页数"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompetitionVO"
+  /api/competition/info:
+    get:
+      summary: "获取关于一场比赛的信息"
+      operationId: "info"
+      parameters:
+        - name: "id"
+          in: "query"
+          description: "比赛ID"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompetitionVO"
+  /api/competition/thumbnail:
+    get:
+      summary: "获取比赛封面"
+      operationId: "thumbnailImage"
+      parameters:
+        - name: "id"
+          in: "query"
+          description: "比赛ID"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+  /api/admin/competition/host:
+    post:
+      summary: "管理员创建比赛"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HostCompetitionDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompetitionVO"
+  /api/admin/competition/modify:
+    post:
+      summary: "管理员修改比赛信息"
+      operationId: "modify"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModifyCompetitionDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompetitionVO"
+  /api/admin/competition/thumbnail:
+    post:
+      summary: "管理员上传比赛介绍图像"
+      operationId: "uploadThumbnail"
+      parameters:
+        - name: "id"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "file"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "binary"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CompetitionVO"
+  /api/admin/competition/delete:
+    delete:
+      summary: "管理员删除比赛"
+      operationId: "deleteCompetition"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteCompetitionDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/admin/competition/list:
+    get:
+      summary: "管理员查看所有比赛"
+      operationId: "list"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/CompetitionVO"
+  /api/admin/photo/review:
+    post:
+      summary: "管理员审查相片"
+      operationId: "review"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewPhotoDTO"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+  /api/admin/photo/padding:
+    get:
+      summary: "管理员列出所有待审查的照片"
+      operationId: "paddingPhotos"
+      parameters:
+        - name: "page"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+  /api/admin/photo/rejected:
+    get:
+      summary: "管理员列出拒绝的照片"
+      operationId: "rejectedPhotos"
+      parameters:
+        - name: "page"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PhotoVO"
+components:
+  schemas:
+    EditProfileDTO:
+      type: "object"
+      properties:
+        bio:
+          type: "string"
+    UserVO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        nickname:
+          type: "string"
+        bio:
+          type: "string"
+        avatar:
+          type: "string"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+    RegisterDTO:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    ResetPasswordDTO:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+        password:
+          type: "string"
+    MediaVO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+    EnterCompetitionDTO:
+      type: "object"
+      properties:
+        competition:
+          type: "string"
+        media:
+          type: "string"
+        description:
+          type: "string"
+    PhotoVO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        description:
+          type: "string"
+        owner:
+          type: "string"
+        competition:
+          type: "string"
+        votes:
+          type: "integer"
+          format: "int32"
+    VoteDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+    DeletePhotoDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+    CompetitionVO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        host:
+          type: "string"
+        endDate:
+          type: "integer"
+          format: "int64"
+        maxUploads:
+          type: "integer"
+          format: "int32"
+        enteredPhotos:
+          type: "integer"
+          format: "int32"
+    HostCompetitionDTO:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        description:
+          type: "string"
+        maxUploads:
+          type: "integer"
+          format: "int32"
+        duration:
+          type: "integer"
+          format: "int32"
+    ModifyCompetitionDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        maxUploads:
+          type: "integer"
+          format: "int32"
+        endDate:
+          type: "integer"
+          format: "int64"
+    DeleteCompetitionDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+    ReviewPhotoDTO:
+      type: "object"
+      properties:
+        photo:
+          type: "string"
+        status:
+          type: "string"
+          enum:
+            - "REJECTED"
+            - "ACCEPTED"
+            - "PENDING"
+    AuthorizeVO:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        token:
+          type: "string"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+        expire:
+          type: "number"
