@@ -5,13 +5,15 @@ spring:
     mongodb:
       uri: mongodb://root:password@localhost:27017/xvpt?authSource=admin
   security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9000/realms/xvpt-realm
+    jwt:
+      key: ${JWT_KEY:asofhohoiv}
+      expire: ${JWT_EXPIRE:14}
   servlet:
     multipart:
       max-file-size: 10MB
 
 xvpt:
   file-store: ./xvpt
+  account:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:password}

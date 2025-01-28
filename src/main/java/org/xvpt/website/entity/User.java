@@ -7,7 +7,12 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -15,16 +20,20 @@ import java.util.List;
 @Document
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends TrackingEntity {
+public class User extends TrackingEntity implements Serializable, UserDetails {
     @Id
     private String id;
     private String bio;
-    private String email;
-
-    private String firstname;
-    private String lastname;
+    private String nickname;
+    private String username;
+    private String password;
 
     @DBRef
     private Media avatar;
     private List<String> roles;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(it -> new SimpleGrantedAuthority("ROLE_" + it)).toList();
+    }
 }

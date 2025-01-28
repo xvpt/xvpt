@@ -1,4 +1,4 @@
-# XRK's Vision Photo Contest Platform
+# Xrk's Vision Photo conTest Platform
 
 ![xrk](image/xrk.jpg)
 

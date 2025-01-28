@@ -43,6 +43,16 @@ public record RestBean<T>(int code, T data, String message) {
         return failure(code, exception.getMessage());
     }
 
+    @Contract("_ -> new")
+    public static <T> @NotNull RestBean<T> badRequest(String message) {
+        return failure(400, message);
+    }
+
+    @Contract(" -> new")
+    public static <T> @NotNull RestBean<T> badRequest() {
+        return badRequest("Bad request");
+    }
+
     public String toJson() {
         return JSONObject.toJSONString(this, JSONWriter.Feature.WriteNulls);
     }

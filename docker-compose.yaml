@@ -22,39 +22,6 @@ services:
     networks:
       - xvpt
     restart: always
-  keycloak-mysql:
-    container_name: xvpt-keycloak-mysql
-    image: mysql:latest
-    restart: always
-    volumes:
-      - mysql:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_USERNAME: root
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: keycloak
-    networks:
-      - xvpt
-  keycloak:
-    container_name: xvpt-keycloak
-    image: quay.io/keycloak/keycloak:latest
-    command: [ "start-dev", "--import-realm" ]
-    ports:
-      - "9000:8080"
-    restart: always
-    environment:
-      KC_DB: mysql
-      KC_DB_URL: jdbc:mysql://xvpt-keycloak-mysql:3306/keycloak?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      KC_DB_USERNAME: root
-      KC_DB_PASSWORD: root
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    networks:
-      - xvpt
-    depends_on:
-      - keycloak-mysql
-    volumes:
-      - ./docker/keycloak/realms/:/opt/keycloak/data/import/
-      - ./docker/scripts/wait-for-it.sh:/wait-for-it.sh
 
 networks:
   xvpt:
