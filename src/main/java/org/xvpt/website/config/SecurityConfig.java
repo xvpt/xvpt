@@ -46,6 +46,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/api/competition/host").hasRole("ADMIN")
+                        .requestMatchers("/api/user/register").anonymous()
                         .anyRequest().authenticated()
                 )
                 .formLogin(
